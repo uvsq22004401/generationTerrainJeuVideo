@@ -6,7 +6,7 @@
 # Theotime MAMOU
 # Auguste MAJOU
 # Gregoire DUNGLAS
-# Keli xaviera DZOUOSSIA MOZIE
+# Keli Xaviera DZOUOSSIA MOZIE
 #########################################
 
 
