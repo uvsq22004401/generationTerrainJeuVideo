@@ -49,13 +49,15 @@ def couleurTerrain() :
 
 def generationTerrains () :
     global couleurInitiale, listeCases
+    listeCases = []
     for i in range(0,LARGEUR,10) :
         for j in range(0,HAUTEUR,10) :
             couleurTerrain()
             canvas.create_rectangle((i,j), (i+10,j+10), outline = "black", fill=couleurInitiale)
             identitéCase= [couleurInitiale,i,j]
             listeCases.append(identitéCase)
-    print(listeCases)
+    for i in range(4):
+        automate()
 
 def sauvegarde ():
     with open('save.pkl','wb' ) as savepickle :
@@ -73,6 +75,35 @@ def reload ():
         y = case[2]
         couleur = case[0]
         canvas.create_rectangle((x,y), (x+10,y+10), outline = "black", fill=couleur)
+
+def automate():
+    global listeCases
+    listeBis = list(listeCases)
+    voisin = [-1, 0, 1]
+    voisin2 = [-50, 0, 50]
+    for i in range(len(listeCases)):
+        VAL = 0
+        for x in range(3):
+            v2 = voisin2[x]
+            for v in range(3):
+                v1 = voisin[v]
+                b = i + v1 + v2
+                if b > 0 and b < 2500 :
+                    c = listeCases[b][0]
+                    if c == 'blue':
+                        VAL = VAL + 1
+        if VAL >= 5:
+            listeBis[i][0] = 'blue'
+        else :
+            listeBis[i][0] = 'green'
+    for i in range(len(listeBis)):
+        case = listeBis[i]
+        x = case[1]
+        y = case[2]
+        couleur = case[0]
+        canvas.create_rectangle((x,y), (x+10,y+10), outline = "black", fill=couleur)
+    listeCases = listeBis
+
 
 #########################################
 
