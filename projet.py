@@ -95,7 +95,7 @@ def Paramètre():
 
 
 def generationTerrains () :
-    global couleurInitiale, listeCases , n, Pers
+    global couleurInitiale, listeCases , n, Pers, Position
     listeCases = []
     for i in range(0,LARGEUR,10) :
         for j in range(0,HAUTEUR,10) :
@@ -106,6 +106,7 @@ def generationTerrains () :
     for i in range(n):
         automate()
     Pers = 1
+    Position = 0
 
 def sauvegarde ():
     with open('save.pkl','wb' ) as savepickle :
@@ -157,7 +158,6 @@ def automate():
         couleur = case[0]
         canvas.create_rectangle((x,y), (x+10,y+10), outline = "black", fill=couleur)
     listeCases = listeBis
-
 
 
 
@@ -247,6 +247,7 @@ def bain ():
     labeln['text'] = "n =" + str(n)
 
 
+
 def pers_position(event):
     global listeCases, Pers, Position
     x = event.x
@@ -274,89 +275,50 @@ def pers_position(event):
     canvas.create_rectangle((c1,c2), (c1-10,c2-10), outline = "black", fill= statut[0])
 
 
-def mouv_haut(event):
+def mouvement(a, b, c, d):
     global Position, listeCases
-    if Position != 0 and Position[1] != 0:
-        case1 = listeCases[int((500/10)*int(Position[0])+int(Position[1]))]
-        case2 = listeCases[int((500/10)*int(Position[0])+int(Position[1])-1)]
-        if case2[0] == "green":
-            c1, c2 = Position[2], Position[3]
-            canvas.create_rectangle((c1,c2), (c1-10,c2-10),
-             outline = "black", fill= "green")
-            c2 = c2 - 10
-            canvas.create_rectangle((c1,c2), (c1-10,c2-10),
-             outline = "black", fill= "black")
-            case2[0] = "black"
-            case1[0] = "green"
-            Position[1] += -1
-            Position[3] += - 10
+    if Position != 0:
+        if Position[a] != b:
+            case1 = listeCases[int((500/10)*int(Position[0])+int(Position[1]))]
+            case2 = listeCases[int((500/10)*int(Position[0]+c)+int(Position[1]+d))]
+            if case2[0] == "green":
+                c1, c2 = Position[2], Position[3]
+                canvas.create_rectangle((c1,c2), (c1-10,c2-10),
+                 outline = "black", fill= "green")
+                if d == 0 :
+                    c1 = c1 + 10*c
+                    Position[0] += c
+                    Position[2] += 10*c
+                if c == 0 :
+                    c2 = c2 + 10*d
+                    Position[1] += d
+                    Position[3] += 10*d
+                canvas.create_rectangle((c1,c2), (c1-10,c2-10),
+                 outline = "black", fill= "black")
+                case2[0] = "black"
+                case1[0] = "green"
+            else:
+                print("Le personnage ne peut pas aller sur l'eau")
         else:
-            print("Le personnage ne peut pas aller sur l'eau")
+            print("Le personnage doit rester sur le terrain")
     else:
-        print("Le personnage n'est pas positionné ou sa position ne permet pas le deplacement demandé")
+        print("Le personnage n'est pas positionné ")
+
+
+def mouv_haut(event):
+    mouvement(1, 0, 0, -1)
+
 
 def mouv_bas(event):
-    global Position, listeCases
-    if Position != 0 and Position[1] != 49:
-        case1 = listeCases[int((500/10)*int(Position[0])+int(Position[1]))]
-        case2 = listeCases[int((500/10)*int(Position[0])+int(Position[1])+1)]
-        if case2[0] == "green":
-            c1, c2 = Position[2], Position[3]
-            canvas.create_rectangle((c1,c2), (c1-10,c2-10),
-             outline = "black", fill= "green")
-            c2 = c2 + 10
-            canvas.create_rectangle((c1,c2), (c1-10,c2-10),
-             outline = "black", fill= "black")
-            case2[0] = "black"
-            case1[0] = "green"
-            Position[1] += 1
-            Position[3] += 10
-        else:
-            print("Le personnage ne peut pas aller sur l'eau")
-    else:
-        print("Le personnage n'est pas positionné ou sa position ne permet pas le deplacement demandé")
+    mouvement(1, 49, 0, 1)
+
 
 def mouv_gauche(event):
-    global Position, listeCases
-    if Position != 0 and Position[0] != 0 :
-        case1 = listeCases[int((500/10)*int(Position[0])+int(Position[1]))]
-        case2 = listeCases[int((500/10)*int(Position[0]-1)+int(Position[1]))]
-        if case2[0] == "green":
-            c1, c2 = Position[2], Position[3]
-            canvas.create_rectangle((c1,c2), (c1-10,c2-10),
-             outline = "black", fill= "green")
-            c1 = c1 - 10
-            canvas.create_rectangle((c1,c2), (c1-10,c2-10),
-             outline = "black", fill= "black")
-            case2[0] = "black"
-            case1[0] = "green"
-            Position[0] += -1
-            Position[2] += - 10
-        else:
-            print("Le personnage ne peut pas aller sur l'eau")
-    else:
-        print("Le personnage n'est pas positionné ou sa position ne permet pas le deplacement demandé")
+    mouvement(0, 0, -1, 0)
+
 
 def mouv_droite(event):
-    global Position, listeCases
-    if Position != 0 and Position[0] != 49:
-        case1 = listeCases[int((500/10)*int(Position[0])+int(Position[1]))]
-        case2 = listeCases[int((500/10)*int(Position[0]+1)+int(Position[1]))]
-        if case2[0] == "green":
-            c1, c2 = Position[2], Position[3]
-            canvas.create_rectangle((c1,c2), (c1-10,c2-10),
-             outline = "black", fill= "green")
-            c1 = c1 + 10
-            canvas.create_rectangle((c1,c2), (c1-10,c2-10),
-             outline = "black", fill= "black")
-            case2[0] = "black"
-            case1[0] = "green"
-            Position[0] += 1
-            Position[2] += 10
-        else:
-            print("Le personnage ne peut pas aller sur l'eau")
-    else:
-        print("Le personnage n'est pas positionné ou sa position ne permet pas le deplacement demandé")
+    mouvement(0, 49, 1, 0)
 
 #########################################
 
