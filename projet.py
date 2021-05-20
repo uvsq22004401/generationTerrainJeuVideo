@@ -16,6 +16,7 @@
 import random as rd
 import tkinter as tk
 import pickle as pck
+from copy import deepcopy
 #########################################
 
 
@@ -37,6 +38,7 @@ n = 4
 couleurInitiale=""
 listeCases = []
 save = [listeCases]
+Hist_mouv =[]
 Pers = 1
 Position = 0
 #########################################
@@ -95,7 +97,7 @@ def Paramètre():
 
 
 def generationTerrains () :
-    global couleurInitiale, listeCases , n, Pers, Position
+    global couleurInitiale, listeCases , n, Pers, Position, Hist_mouv
     listeCases = []
     for i in range(0,LARGEUR,10) :
         for j in range(0,HAUTEUR,10) :
@@ -107,6 +109,7 @@ def generationTerrains () :
         automate()
     Pers = 1
     Position = 0
+    Hist_mouv = []
 
 def sauvegarde ():
     with open('save.pkl','wb' ) as savepickle :
@@ -114,7 +117,7 @@ def sauvegarde ():
         pck.dump(Position,savepickle)
 
 def reload ():
-    global listeCases, Position
+    global listeCases, Position, Hist_mouv
     with open('save.pkl', 'rb') as savepickle:
         données = pck.load(savepickle)
         Position = pck.load(savepickle)
@@ -125,10 +128,11 @@ def reload ():
         y = case[2]
         couleur = case[0]
         canvas.create_rectangle((x,y), (x+10,y+10), outline = "black", fill=couleur)
+    Hist_mouv = []
 
 def automate():
     global listeCases , k , T
-    listeBis = list(listeCases)
+    listeBis = deepcopy(listeCases)
     voisin = [0]
     voisin2 = [0]
     for a in range(1, k+1):
@@ -143,7 +147,7 @@ def automate():
             for v in range(len(voisin)):
                 v1 = voisin[v]
                 b = i + v1 + v2
-                if b > 0 and b < 2500 :
+                if b >= 0 and b <= 2499 and b != i:
                     c = listeCases[b][0]
                     if c == 'blue':
                         VAL = VAL + 1
@@ -157,7 +161,7 @@ def automate():
         y = case[2]
         couleur = case[0]
         canvas.create_rectangle((x,y), (x+10,y+10), outline = "black", fill=couleur)
-    listeCases = listeBis
+    listeCases = deepcopy(listeBis)
 
 
 
@@ -306,19 +310,44 @@ def mouvement(a, b, c, d):
 
 
 def mouv_haut(event):
+    global Hist_mouv
     mouvement(1, 0, 0, -1)
+    Hist_mouv.append("Up")
 
 
 def mouv_bas(event):
+    global Hist_mouv
     mouvement(1, 49, 0, 1)
+    Hist_mouv.append("Down")
 
 
 def mouv_gauche(event):
+    global Hist_mouv
     mouvement(0, 0, -1, 0)
+    Hist_mouv.append("Left")
 
 
 def mouv_droite(event):
+    global Hist_mouv
     mouvement(0, 49, 1, 0)
+    Hist_mouv.append("Right")
+
+def Annul_mouv(event):
+    global Hist_mouv
+    if Hist_mouv[-1] == "Up":
+        mouvement(1, 49, 0, 1)
+    if Hist_mouv[-1] == "Down":
+        mouvement(1, 0, 0, -1)
+    if Hist_mouv[-1] == "Left":
+        mouvement(0, 49, 1, 0)
+    if Hist_mouv[-1] == "Right":
+        mouvement(0, 0, -1, 0)
+    del Hist_mouv[-1]
+
+def EasterEgg():
+    import webbrowser
+
+    webbrowser.open('http://youtube.com/watch?v=dQw4w9WgXcQ')
 
 #########################################
 
@@ -345,6 +374,7 @@ canvas.bind("<Up>", mouv_haut)
 canvas.bind("<Down>", mouv_bas)
 canvas.bind("<Left>", mouv_gauche)
 canvas.bind("<Right>", mouv_droite)
+canvas.bind("<Delete>", Annul_mouv)
 
 button = tk.Button(racine, text="générer des terrains", command = generationTerrains)
 button.grid(column=0, row=1)
@@ -357,6 +387,9 @@ button3.grid(column=0, row=3)
 
 button4 = tk.Button(racine, text="changerParamètre", command =Paramètre)
 button4.grid(column=0, row=4)
+
+buttonRick = tk.Button(racine, text="", command =EasterEgg)
+buttonRick.grid(column=2, row=4)
 
 labelk = tk.Label(racine, text= "k =" + str(k))
 labelk.grid(column = 1, row = 1)
