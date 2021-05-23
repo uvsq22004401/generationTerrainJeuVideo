@@ -6,7 +6,7 @@
 # Theotime MAMOU
 # Auguste MAJOU
 # Gregoire DUNGLAS
-# Keli Xaviera DZOUOSSIA MOZIE
+# Keli xaviera DZOUOSSIA MOZIE
 #########################################
 
 
@@ -371,4 +371,8 @@ labeln = tk.Label(racine, text= "n =" + str(n))
 labeln.grid(column = 1, row = 4)
 
 
+<<<<<<< HEAD
 racine.mainloop()
+=======
+racine.mainloop()
+>>>>>>> 9e9bb4b536b3a12cb87e391883f2d1bf1bcad827
